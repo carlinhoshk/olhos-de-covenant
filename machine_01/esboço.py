@@ -67,7 +67,7 @@ if (b == 0):
         num = num.replace('S', "5")
         letras = letras.replace('5', "S")
         placa_escrita = letras + '-' + num
-        print (placa_escrita[:8])
+        print(placa_escrita[:8])
         if cv2.waitKey(1) & 0xFF == ord("s"):
             break
 camera.release()

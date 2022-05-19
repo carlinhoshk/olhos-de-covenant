@@ -1,9 +1,9 @@
 
 # consome muita memoria # mais limpo melhor
 
+import os, cv2, mahotas, time, easyocr
+from typing import Union, Any
 
-
-import os, cv2, mahotas, pytesseract, time
 from PIL import Image
 ###############################################################################
 def edicão_placa(img2):
@@ -25,6 +25,7 @@ def edicão_placa(img2):
  cv2.imwrite("Placa filtrada.jpg", blur)
  return blur
 ###############################################################################
+reader = easyocr.Reader(['pt','pt'])
 blur = 0
 camera = cv2.VideoCapture(0)
 df = cv2.CascadeClassifier('placas_original.xml')
@@ -32,48 +33,47 @@ placa_escrita = 0
 while True:
  (sucesso, frame) = camera.read()
  if not sucesso: #final do vídeo
- break
+  break
  imgPB = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
- placas = df.detectMultiScale(imgPB, scaleFactor=1.02, minNeighbors=10,
-minSize=(60,60),flags=cv2.CASCADE_SCALE_IMAGE)
+ placas = df.detectMultiScale(imgPB, scaleFactor=1.02, minNeighbors=10, minSize=(60,60),flags=cv2.CASCADE_SCALE_IMAGE)
  imgPB_temp = imgPB.copy()
  imgC = frame
  cv2.imshow("Encontrando placas...", frame)
  if (b == 0):
- for (x, y, w, h) in placas:
- a = a +1
- placa = frame[y:y + h, x:x + w]
- cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 255), 2)
- cv2.imwrite("imagem_frame.jpg", frame)
- edicão_placa(placa)
- caracs = blur
- caracs = pytesseract.image_to_string(Image.open("Placa filtrada.jpg"),
+  for (x, y, w, h) in placas:
+   a: Union[int, Any] = a +1
+   placa = frame[y:y + h, x:x + w]
+   cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 255), 2)
+   cv2.imwrite("imagem_frame.jpg", frame)
+   edicão_placa(placa)
+   caracs = blur
+   caracs = reader.readtext(Image.open("Placa filtrada.jpg"),
 lang="amh")
- caracs = caracs.replace(' ', '')
- caracs = caracs.replace("-", "")
- letras = caracs[:3]
- num = caracs[3:]
- num = num.replace("-", "")
- letras = letras.replace("-", "")
- num = num.replace('O', "0")
- letras = letras.replace('0', "O")
- num = num.replace('I', "1")
- letras = letras.replace('1', "I")
- num = num.replace('G', "6")
- letras = letras.replace('6', "G")
- num = num.replace('B', "8")
- letras = letras.replace('8', "B")
- num = num.replace('T', "1")
- letras = letras.replace('1', "T")
- num = num.replace('Z', "2")
- letras = letras.replace('2', "Z")
- num = num.replace('H', "11")
- letras = letras.replace('11', "H")
- num = num.replace('S', "5")
- letras = letras.replace('5', "S")
- placa_escrita = letras + '-' + num
- print (placa_escrita[:8])
+  caracs = caracs.replace(' ', '')
+  caracs = caracs.replace("-", "")
+  letras = caracs[:3]
+  num = caracs[3:]
+  num = num.replace("-", "")
+  letras = letras.replace("-", "")
+  num = num.replace('O', "0")
+  letras = letras.replace('0', "O")
+  num = num.replace('I', "1")
+  letras = letras.replace('1', "I")
+  num = num.replace('G', "6")
+  letras = letras.replace('6', "G")
+  num = num.replace('B', "8")
+  letras = letras.replace('8', "B")
+  num = num.replace('T', "1")
+  letras = letras.replace('1', "T")
+  num = num.replace('Z', "2")
+  letras = letras.replace('2', "Z")
+  num = num.replace('H', "11")
+  letras = letras.replace('11', "H")
+  num = num.replace('S', "5")
+  letras = letras.replace('5', "S")
+  placa_escrita = letras + '-' + num
+  print (placa_escrita[:8])
  if cv2.waitKey(1) & 0xFF == ord("s"):
- break
+  break
 camera.release()
 cv2.destroyAllWindows()
