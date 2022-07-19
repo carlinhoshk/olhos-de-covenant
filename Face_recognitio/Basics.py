@@ -2,9 +2,9 @@ import cv2
 import numpy as np
 import face_recognition
 
-imgEu = face_recognition.load_image_file('imagebasica/carlos1.jpg')
+imgEu = face_recognition.load_image_file('carlos1.jpg')
 imgEu = cv2.cvtColor(imgEu, cv2.COLOR_BGR2RGB)
-imgTest = face_recognition.load_image_file('imagebasica/smurfdomuca.jpg')
+imgTest = face_recognition.load_image_file('biden.jpg')
 imgTest = cv2.cvtColor(imgTest, cv2.COLOR_BGR2RGB)
 
 faceLoc = face_recognition.face_locations(imgEu)[0]
